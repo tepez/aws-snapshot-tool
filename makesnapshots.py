@@ -87,7 +87,7 @@ count_success = 0
 count_total = 0
 
 # Connect to AWS using the credentials provided above or in Environment vars or using IAM role.
-print 'Connecting to AWS'
+print('Connecting to AWS')
 if proxyHost:
     # proxy:
     # using roles
@@ -105,7 +105,7 @@ else:
 
 # Connect to SNS
 if sns_arn:
-    print 'Connecting to SNS'
+    print('Connecting to SNS')
     if proxyHost:
         # proxy:
         # using roles:
@@ -132,17 +132,17 @@ def get_resource_tags(resource_id):
     return resource_tags
 
 def set_resource_tags(resource, tags):
-    for tag_key, tag_value in tags.iteritems():
+    for tag_key, tag_value in tags.items():
         if tag_key not in resource.tags or resource.tags[tag_key] != tag_value:
-            print 'Tagging %(resource_id)s with [%(tag_key)s: %(tag_value)s]' % {
+            print('Tagging %(resource_id)s with [%(tag_key)s: %(tag_value)s]' % {
                 'resource_id': resource.id,
                 'tag_key': tag_key,
                 'tag_value': tag_value
-            }
+            })
             resource.add_tag(tag_key, tag_value)
 
 # Get all the volumes that match the tag criteria
-print 'Finding volumes that match the requested tag ({ "tag:%(tag_name)s": "%(tag_value)s" })' % config
+print('Finding volumes that match the requested tag ({ "tag:%(tag_name)s": "%(tag_value)s" })' % config)
 vols = conn.get_all_volumes(filters={ 'tag:' + config['tag_name']: config['tag_value'] })
 
 for vol in vols:
@@ -160,11 +160,11 @@ for vol in vols:
             current_snap = vol.create_snapshot(description)
             set_resource_tags(current_snap, tags_volume)
             suc_message = 'Snapshot created with description: %s and tags: %s' % (description, str(tags_volume))
-            print '     ' + suc_message
+            print('     ' + suc_message)
             logging.info(suc_message)
             total_creates += 1
-        except Exception, e:
-            print "Unexpected error:", sys.exc_info()[0]
+        except Exception as e:
+            print("Unexpected error:", sys.exc_info()[0])
             logging.error(e)
             pass
 
@@ -207,7 +207,7 @@ for vol in vols:
             total_deletes += 1
         time.sleep(3)
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        print("Unexpected error:", sys.exc_info()[0])
         logging.error('Error in processing volume with id: ' + vol.id)
         errmsg += 'Error in processing volume with id: ' + vol.id
         count_errors += 1
@@ -225,8 +225,8 @@ message += "\nTotal snapshots created: " + str(total_creates)
 message += "\nTotal snapshots errors: " + str(count_errors)
 message += "\nTotal snapshots deleted: " + str(total_deletes) + "\n"
 
-print '\n' + message + '\n'
-print result
+print('\n' + message + '\n')
+print(result)
 
 # SNS reporting
 if sns_arn:
@@ -235,4 +235,3 @@ if sns_arn:
     sns.publish(sns_arn, message, 'Finished AWS snapshotting')
 
 logging.info(result)
-
