@@ -235,3 +235,6 @@ if sns_arn:
     sns.publish(sns_arn, message, 'Finished AWS snapshotting')
 
 logging.info(result)
+
+if errmsg:
+    exit(1)
