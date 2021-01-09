@@ -187,14 +187,10 @@ for vol in vols:
             logging.info(snap)
             logging.info(snap.start_time)
 
-        def date_compare(snap1, snap2):
-            if snap1.start_time < snap2.start_time:
-                return -1
-            elif snap1.start_time == snap2.start_time:
-                return 0
-            return 1
+        def date_key(snap):
+            return snap.start_time
 
-        deletelist.sort(date_compare)
+        deletelist.sort(key=date_key)
         if period == 'day':
             keep = keep_day
         elif period == 'week':
