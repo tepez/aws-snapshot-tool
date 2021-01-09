@@ -28,6 +28,7 @@ import time
 import sys
 import logging
 from config import config
+import traceback
 
 
 if (len(sys.argv) < 2):
@@ -165,6 +166,7 @@ for vol in vols:
             total_creates += 1
         except Exception as e:
             print("Unexpected error:", sys.exc_info()[0])
+            traceback.print_exc()
             logging.error(e)
             pass
 
@@ -208,6 +210,7 @@ for vol in vols:
         time.sleep(3)
     except:
         print("Unexpected error:", sys.exc_info()[0])
+        traceback.print_exc()
         logging.error('Error in processing volume with id: ' + vol.id)
         errmsg += 'Error in processing volume with id: ' + vol.id
         count_errors += 1
